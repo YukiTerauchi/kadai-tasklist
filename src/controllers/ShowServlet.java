@@ -1,7 +1,6 @@
 package controllers;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.servlet.RequestDispatcher;
@@ -14,25 +13,33 @@ import javax.servlet.http.HttpServletResponse;
 import models.Task;
 import utils.DBUtil;
 
-@WebServlet("/index")
-public class IndexServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+/**
+ * Servlet implementation class ShowServlet
+ */
+@WebServlet("/show")
+public class ShowServlet extends HttpServlet {
+        private static final long serialVersionUID = 1L;
 
-    public IndexServlet() {
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public ShowServlet() {
         super();
     }
 
+    /**
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EntityManager em = DBUtil.createEntityManager();
 
-        List<Task> tasks = em.createNamedQuery("getAllTasks", Task.class).getResultList();
+        Task m = em.find(Task.class, Integer.parseInt(request.getParameter("id")));
 
         em.close();
 
-        request.setAttribute("tasks", tasks);
+        request.setAttribute("task", m);
 
-        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/tasks/index.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/tasks/show.jsp");
         rd.forward(request, response);
     }
-
 }
